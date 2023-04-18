@@ -112,8 +112,6 @@ export default function Estimate() {
           </Box>
         </AccordionDetails>
       </Accordion>
-      <br />
-      明細
       <Dialog
         open={open}
         onClose={handleClose}
