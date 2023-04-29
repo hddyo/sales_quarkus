@@ -50,7 +50,7 @@ export default function Estimate() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    axios.post('http://localhost:8080/api/estimate', {
+    axios.post('http://172.28.73.88:8080/api/estimate', {
       estimateDate: data.get('estimateDate'), //見積日時
       customerName: data.get('customerName'),
       subject: data.get('subject'),

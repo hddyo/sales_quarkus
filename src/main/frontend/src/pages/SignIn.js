@@ -68,7 +68,7 @@ export default function SignIn() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    axios.post('http://localhost:8080/api/login', {
+    axios.post('http://172.28.73.88:8080/api/login', {
       id: data.get('id'),
       password: data.get('password'),
     })
