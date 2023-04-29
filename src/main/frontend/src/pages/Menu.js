@@ -6,7 +6,7 @@ export default function Menu() {
   return (
     <>
       <AppBarMenu />
-      メニューです。
+      メニューですよ。
     </>
   );
 }
