@@ -7,13 +7,15 @@ import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import AppBarMenu from '../components/AppBarMenu';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import { TabContext, TabPanel } from '@mui/lab';
+import AppBarMenu from '../components/AppBarMenu';
 import axios from 'axios';
 
 export default function Estimate() {
@@ -22,6 +24,8 @@ export default function Estimate() {
   const [open, setOpen] = React.useState(false);
   // メッセージ
   const [msg, setMsg] = React.useState({ "id": "000", "msg": "初期メッセージ" });
+  // 明細No
+  const [value, setValue] = React.useState('1');
 
   // ダイアログオープン
   const handleClickOpen = (response) => {
@@ -33,6 +37,31 @@ export default function Estimate() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  // 明細No設定
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  // 明細数を元に配列を作成する関数を作成する
+  // それを呼び出して下記を取得する
+  const tabs = [
+    { "value": "1", "label": "明細１" },
+    { "value": "2", "label": "明細２" },
+    { "value": "3", "label": "明細３" },
+    { "value": "4", "label": "明細４" },
+    { "value": "5", "label": "明細５" },
+    { "value": "6", "label": "明細６" },
+    { "value": "7", "label": "明細７" },
+    { "value": "8", "label": "明細８" },
+    { "value": "9", "label": "明細９" },
+    { "value": "10", "label": "明細１０" },
+    { "value": "11", "label": "明細１１" },
+    { "value": "12", "label": "明細１２" },
+    { "value": "13", "label": "明細１３" },
+    { "value": "14", "label": "明細１４" },
+    { "value": "15", "label": "明細１５" },
+  ];
 
   // エラーハンドル
   const errorHandler = (error) => {
@@ -72,7 +101,7 @@ export default function Estimate() {
   return (
     <>
       <AppBarMenu />
-      <Accordion>
+      <Accordion defaultExpanded={true}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -103,11 +132,96 @@ export default function Estimate() {
             <br />
             <Button
               type="submit"
-              fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ mt: 3, mb: 2, width: "200px" }}
             >
               見積登録
+            </Button>
+          </Box>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
+          <Typography>見積明細</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Box
+            sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 600, border: 1 }}
+          >
+            <TabContext value={value}>
+              <Tabs
+                orientation="vertical"
+                variant="scrollable"
+                value={value}
+                onChange={handleChange}
+                aria-label="Vertical tabs example"
+                sx={{ borderRight: 1, borderColor: 'divider' }}
+              >
+                {tabs.map((tab) => (
+                  <Tab label={tab.label} value={tab.value} />
+                ))}
+              </Tabs>
+              <TabPanel value={value}>
+                <Box sx={{ display: "flex", justifyContent: "left", alignItems: "flex-start", height: 80, width: 1000, padding: 2, border: 1, borderColor: "blue" }}>
+                  <Box sx={{ padding: 2 }} >
+                    <TextField label="商品コード" inputProps={{ maxLength: 5, size: 10 }} InputLabelProps={{ shrink: true, required: true }} />
+                  </Box>
+                  <Box sx={{ padding: 2 }} >
+                    <TextField label="商品名" inputProps={{ maxLength: 20, size: 40 }} InputLabelProps={{ shrink: true, required: true }} />
+                  </Box>
+                </Box>
+                <Box sx={{ display: "flex", justifyContent: "left", alignItems: "flex-start", height: 80, width: 1000, padding: 2, border: 1, borderColor: "blue" }}>
+                  <Box sx={{ padding: 2 }} >
+                    <TextField label="数量" inputProps={{ maxLength: 5, size: 5 }} InputLabelProps={{ shrink: true, required: true }} />
+                  </Box>
+                  <Box sx={{ padding: 2 }} >
+                    <TextField label="単位" inputProps={{ maxLength: 5, size: 5 }} InputLabelProps={{ shrink: true, required: true }} />
+                  </Box>
+                  <Box sx={{ padding: 2 }} >
+                    <TextField label="販売単価" inputProps={{ maxLength: 5, size: 5 }} InputLabelProps={{ shrink: true, required: true }} />
+                  </Box>
+                  <Box sx={{ padding: 2 }} >
+                    <TextField label="販売金額" inputProps={{ maxLength: 5, size: 5 }} InputLabelProps={{ shrink: true, required: true }} />
+                  </Box>
+                  <Box sx={{ padding: 2 }} >
+                    <TextField label="課税区分" inputProps={{ maxLength: 5, size: 5 }} InputLabelProps={{ shrink: true, required: true }} />
+                  </Box>
+                </Box>
+                <Box sx={{ display: "flex", justifyContent: "left", alignItems: "flex-start", height: 80, width: 1000, padding: 2, border: 1, borderColor: "blue" }}>
+                  <Box sx={{ padding: 2 }} >
+                    <TextField label="数量" disabled={true} inputProps={{ maxLength: 5, size: 5 }} InputLabelProps={{ shrink: true, required: true }} />
+                  </Box>
+                  <Box sx={{ padding: 2 }} >
+                    <TextField label="単位" inputProps={{ maxLength: 5, size: 5 }} InputLabelProps={{ shrink: true, required: true }} />
+                  </Box>
+                  <Box sx={{ padding: 2 }} >
+                    <TextField label="販売原価" inputProps={{ maxLength: 5, size: 5 }} InputLabelProps={{ shrink: true, required: true }} />
+                  </Box>
+                  <Box sx={{ padding: 2 }} >
+                    <TextField label="原価金額" inputProps={{ maxLength: 5, size: 5 }} InputLabelProps={{ shrink: true, required: true }} />
+                  </Box>
+                </Box>
+                <Box sx={{ display: "flex", justifyContent: "left", alignItems: "flex-start", width: 1000, padding: 2, border: 1, borderColor: "blue" }}>
+                  <Box sx={{ padding: 2 }} >
+                    <TextField label="適用" inputProps={{ maxLength: 60, size: 60 }} InputLabelProps={{ shrink: true, required: true }} />
+                  </Box>
+                </Box>
+              </TabPanel >
+            </TabContext >
+          </Box>
+          <Box
+            sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 100, border: 1 }}
+          >
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{ mt: 3, mb: 2, width: "200px", height: "40px" }}
+            >
+              明細登録
             </Button>
           </Box>
         </AccordionDetails>

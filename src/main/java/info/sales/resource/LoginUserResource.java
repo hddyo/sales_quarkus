@@ -12,6 +12,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.jboss.logging.Logger;
+
 import info.sales.entity.LoginUser;
 import info.sales.form.LoginForm;
 import info.sales.msg.RecordErrorMsg;
@@ -19,6 +21,9 @@ import info.sales.service.LoginUserService;
 
 @Path("/api/login")
 public class LoginUserResource {
+
+    @Inject
+    Logger JBOSS_LOGGER;
 
     private final LoginUserService service;
 
@@ -47,6 +52,9 @@ public class LoginUserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(LoginForm loginForm) {
+
+        // ログ出力
+        JBOSS_LOGGER.info("geeeeeeeeeeeeeeee");
 
         // JSON パラメータ取得
         String id = loginForm.id;
