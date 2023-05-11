@@ -1,32 +1,20 @@
 package info.sales.service;
 
-import java.time.LocalDate;
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
-
 import info.sales.entity.Estimate;
+import info.sales.entity.EstimateDetail;
 import info.sales.form.EstimateForm;
+import info.sales.form.EstimateDetailForm;
 
 @ApplicationScoped
 public class EstimateService {
 
-    public Estimate findById(Long id) {
-        Estimate estimate = Estimate.findById(id);
-        return estimate;
-    }
-
-    @Transactional
-    public void addInit() {
-
-        LocalDate date = LocalDate.now();
-        Estimate estimate = new Estimate(date, "1", "2", "3",
-                "4", "5", "6", "7",
-                "8");
-        estimate.persist();
-
-        return;
-    }
-
+    /**
+     * 見積ヘッダ DB登録
+     * 
+     * @param form
+     */
     @Transactional
     public void add(EstimateForm form) {
 
@@ -41,6 +29,37 @@ public class EstimateService {
                 form.paymentCriteria(),
                 form.overview());
         estimate.persist();
+
+        return;
+    }
+
+    /**
+     * 見積明細 DB登録
+     * 
+     * @param form
+     */
+    @Transactional
+    public void addDetail(EstimateDetailForm form) {
+
+        // 見積ID検索
+
+        // DB登録
+        EstimateDetail estimateDetail = new EstimateDetail(
+                1L,
+                form.rowNo(),
+                form.itemCode(),
+                form.itemName(),
+                form.salesQuantity(),
+                form.salesUnit(),
+                form.salesPrice(),
+                form.salesAmount(),
+                form.costPrice(),
+                form.costAmount(),
+                form.profit(),
+                form.taxedUnit(),
+                form.apply());
+
+        estimateDetail.persist();
 
         return;
     }

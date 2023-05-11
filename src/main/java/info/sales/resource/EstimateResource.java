@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response;
 
 import org.hibernate.exception.DataException;
 
+import info.sales.form.EstimateDetailForm;
 import info.sales.form.EstimateForm;
 import info.sales.msg.AplicationMsg;
 import info.sales.service.EstimateService;
@@ -30,14 +31,20 @@ public class EstimateResource {
     @Produces(MediaType.TEXT_PLAIN)
     public String estimate() {
 
-        service.addInit();
         return "Hello Estimate";
     }
 
+    /**
+     * 見積ヘッダ登録
+     * 
+     * @param form 見積ヘッダフォーム
+     * @return レスポンス
+     */
     @POST
+    @Path("header")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response add(EstimateForm form) {
+    public Response addHeader(EstimateForm form) {
 
         try {
             service.add(form);
@@ -50,12 +57,34 @@ public class EstimateResource {
             AplicationMsg msg = new AplicationMsg("002", "異常発生しました。");
             return Response.status(404).entity(msg).build();
 
+        }
+
+    }
+
+    /**
+     * 見積明細登録
+     * 
+     * @param form 見積明細フォーム
+     * @return レスポンス
+     */
+    @POST
+    @Path("detail")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addDetail(EstimateDetailForm form) {
+
+        try {
+            service.addDetail(form);
+
+            AplicationMsg msg = new AplicationMsg("001", "登録完了しました。");
+            return Response.ok(msg).build();
+
         } catch (PersistenceException e) {
 
             AplicationMsg msg = new AplicationMsg("002", "異常発生しました。");
             return Response.status(404).entity(msg).build();
 
         }
-
     }
+
 }
