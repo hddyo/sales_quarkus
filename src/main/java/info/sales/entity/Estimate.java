@@ -19,31 +19,34 @@ public class Estimate extends PanacheEntityBase {
     @SequenceGenerator(name = "estimate_id_seq")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
+    @Column(name = "estimate_no")
+    public String estimateNo;
     @Column(name = "estimate_date")
     public LocalDate estimateDate;
-    @Column(name = "customer_name")
+    @Column(name = "customer_name", nullable = true)
     public String customerName;
-    @Column(name = "subject")
+    @Column(name = "subject", nullable = true)
     public String subject;
-    @Column(name = "delivery_deadline")
+    @Column(name = "delivery_deadline", nullable = true)
     public String deliveryDeadline;
-    @Column(name = "delivery_location")
+    @Column(name = "delivery_location", nullable = true)
     public String deliveryLocation;
-    @Column(name = "estimate_expiration_date")
+    @Column(name = "estimate_expiration_date", nullable = true)
     public String estimateExpirationDate;
-    @Column(name = "responsible_person")
+    @Column(name = "responsible_person", nullable = true)
     public String responsiblePerson;
-    @Column(name = "payment_criteria")
+    @Column(name = "payment_criteria", nullable = true)
     public String paymentCriteria;
-    @Column(name = "overview")
+    @Column(name = "overview", nullable = true)
     public String overview;
 
     public Estimate() {
     }
 
-    public Estimate(LocalDate estimateDate, String customerName, String subject, String deliveryDeadline,
-            String deliveryLocation, String estimateExpirationDate, String responsiblePerson, String paymentCriteria,
-            String overview) {
+    public Estimate(String estimateNo, LocalDate estimateDate, String customerName, String subject,
+            String deliveryDeadline, String deliveryLocation, String estimateExpirationDate,
+            String responsiblePerson, String paymentCriteria, String overview) {
+        this.estimateNo = estimateNo;
         this.estimateDate = estimateDate;
         this.customerName = customerName;
         this.subject = subject;

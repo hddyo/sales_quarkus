@@ -21,40 +21,28 @@ public class EstimateDetail extends PanacheEntityBase {
 
     @Column(name = "estimate_id", nullable = true)
     public Long estimateId;
-
     @Column(name = "row_no")
     public String rowNo;
-
     @Column(name = "item_code")
     public String itemCode;
-
     @Column(name = "item_name", nullable = true)
     public String itemName;
-
     @Column(name = "sales_quantity", nullable = true)
     public Integer salesQuantity;
-
     @Column(name = "sales_unit", nullable = true)
     public String salesUnit;
-
     @Column(name = "sales_price", nullable = true)
     public Integer salesPrice;
-
     @Column(name = "sales_amount", nullable = true)
     public Integer salesAmount;
-
     @Column(name = "cost_price", nullable = true)
     public Integer costPrice;
-
     @Column(name = "cost_amount", nullable = true)
     public Integer costAmount;
-
     @Column(name = "profit", nullable = true)
     public Integer profit;
-
     @Column(name = "taxed_unit", nullable = true)
     public String taxedUnit;
-
     @Column(name = "apply", nullable = true)
     public String apply;
 
