@@ -4,10 +4,8 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -30,22 +28,6 @@ public class LoginUserResource {
     @Inject
     public LoginUserResource(LoginUserService service) {
         this.service = service;
-    }
-
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    @Path("{id}")
-    public String get(@PathParam("id") Long id) {
-        LoginUser user = service.findById(id);
-        return user.fullName;
-    }
-
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    @Path("/add")
-    public String add() {
-        service.add();
-        return "Hello from RESTEasy Reactive";
     }
 
     @POST
