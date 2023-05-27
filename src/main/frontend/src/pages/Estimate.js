@@ -28,6 +28,8 @@ export default function Estimate() {
   const [open, setOpen] = React.useState(false);
   // メッセージ
   const [msg, setMsg] = React.useState({ "id": "000", "msg": "初期メッセージ" });
+  // 見積番号
+  const [estimateNo, setEstimateNo] = React.useState("")
   // 明細No
   const [value, setValue] = React.useState("1")
   // 単位（選択値）
@@ -54,6 +56,7 @@ export default function Estimate() {
   const handleClickOpen = (response) => {
     setOpen(true);
     setMsg({ "id": "000", "msg": response.data.msg });
+    setEstimateNo(response.data.estimateNo);
   };
 
   // ダイアログクローズ
@@ -207,7 +210,7 @@ export default function Estimate() {
           >
             <Box sx={{ display: "flex", justifyContent: "left", alignItems: "flex-start", height: 80, width: 1200, border: 0 }}>
               <Box sx={{ padding: 1, width: 200, border: 0 }} >
-                <TextField id="estimateNo" name="estimateNo" label="見積番号" disabled={true} inputProps={{ maxLength: 10, size: 20 }} InputLabelProps={{ shrink: true }} sx={{ backgroundColor: 'silver' }} />
+                <TextField id="estimateNo" name="estimateNo" label="見積番号" value={estimateNo} disabled={true} inputProps={{ maxLength: 10, size: 20 }} InputLabelProps={{ shrink: true }} sx={{ backgroundColor: 'silver' }} />
               </Box>
               <Box sx={{ padding: 1, width: 160, border: 0 }} >
                 <TextField id="estimateDate" name="estimateDate" label="見積日時" type="date" InputLabelProps={{ shrink: true, required: true }} defaultValue="2020-10-11" />

@@ -16,7 +16,7 @@ import org.jboss.logging.Logger;
 
 import info.sales.entity.LoginUser;
 import info.sales.form.LoginForm;
-import info.sales.msg.RecordErrorMsg;
+import info.sales.msg.AplicationMsg;
 import info.sales.service.LoginUserService;
 
 @Path("/api/login")
@@ -65,7 +65,7 @@ public class LoginUserResource {
 
         // 存在無し
         if (Objects.isNull(user)) {
-            RecordErrorMsg emsg = new RecordErrorMsg("001", "ログインユーザが見つかりません");
+            AplicationMsg emsg = new AplicationMsg("001", "ログインユーザが見つかりません");
             return Response.status(404).entity(emsg).build();
 
         }

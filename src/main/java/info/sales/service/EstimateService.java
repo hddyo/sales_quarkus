@@ -6,14 +6,16 @@ import javax.transaction.Transactional;
 import info.sales.entity.Estimate;
 import info.sales.entity.EstimateDetail;
 import info.sales.form.EstimateForm;
-import info.sales.mapper.ManageNoMapper;
+//import info.sales.mapper.ManageNoMapper;
 import info.sales.form.EstimateDetailForm;
 
 @Singleton
 public class EstimateService {
 
+    // @Inject
+    // ManageNoMapper mapper;
     @Inject
-    ManageNoMapper mapper;
+    ManageNoSharedService service;
 
     /**
      * 見積ヘッダ DB登録
@@ -21,10 +23,11 @@ public class EstimateService {
      * @param form
      */
     @Transactional
-    public void add(EstimateForm form) {
+    public String add(EstimateForm form) {
 
         // 採番管理 見積No取得
-        String estimateNo = mapper.getEstimateNo();
+        // String estimateNo = mapper.getEstimateNo();
+        String estimateNo = service.getEstimateNo();
 
         // 明細ヘッダ登録
         Estimate estimate = new Estimate(
@@ -40,7 +43,7 @@ public class EstimateService {
                 form.overview());
         estimate.persist();
 
-        return;
+        return estimateNo;
     }
 
     /**

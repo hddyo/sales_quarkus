@@ -15,6 +15,7 @@ import org.hibernate.exception.DataException;
 import info.sales.form.EstimateDetailForm;
 import info.sales.form.EstimateForm;
 import info.sales.msg.AplicationMsg;
+import info.sales.msg.EstimateMsg;
 import info.sales.service.EstimateService;
 
 @Path("/api/estimate")
@@ -47,9 +48,9 @@ public class EstimateResource {
     public Response addHeader(EstimateForm form) {
 
         try {
-            service.add(form);
+            String EstimanteNo = service.add(form);
 
-            AplicationMsg msg = new AplicationMsg("001", "登録完了しました。");
+            EstimateMsg msg = new EstimateMsg("001", "登録完了しました。", EstimanteNo);
             return Response.ok(msg).build();
 
         } catch (DataException e) {
