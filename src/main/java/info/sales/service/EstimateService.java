@@ -1,7 +1,10 @@
 package info.sales.service;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import info.sales.entity.Estimate;
 import info.sales.entity.EstimateDetail;
@@ -12,7 +15,7 @@ import info.sales.form.EstimateDetailForm;
 public class EstimateService {
 
     @Inject
-    ManageNoSharedService service;
+    ManageNoSharedService manageNoSharedService;
 
     /**
      * 見積ヘッダ DB登録
@@ -23,7 +26,7 @@ public class EstimateService {
     public String add(EstimateForm form) {
 
         // 見積番号取得
-        String estimateNo = service.getEstimateNo();
+        String estimateNo = manageNoSharedService.getEstimateNo();
 
         // 明細ヘッダ登録
         Estimate estimate = new Estimate(
@@ -50,11 +53,17 @@ public class EstimateService {
     @Transactional
     public void addDetail(EstimateDetailForm form) {
 
+        Estimate estimate = new Estimate();
+
         // 見積ID検索
+        // 見積番号を元にＩＤ検索
+        Optional<Estimate> optional = Estimate.findByEstimateNo(form.estimateNo());
+        estimate = optional.orElseThrow(EntityNotFoundException::new);
+        Long id = estimate.id;
 
         // DB登録
         EstimateDetail estimateDetail = new EstimateDetail(
-                1L,
+                id,
                 form.rowNo(),
                 form.itemCode(),
                 form.itemName(),

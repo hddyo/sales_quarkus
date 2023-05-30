@@ -29,7 +29,7 @@ export default function Estimate() {
   // メッセージ
   const [msg, setMsg] = React.useState({ "id": "000", "msg": "初期メッセージ" });
   // 見積番号
-  const [estimateNo, setEstimateNo] = React.useState("")
+  const [estimateNoValue, setEstimateNoValue] = React.useState("")
   // 明細No
   const [value, setValue] = React.useState("1")
   // 単位（選択値）
@@ -56,7 +56,13 @@ export default function Estimate() {
   const handleClickOpen = (response) => {
     setOpen(true);
     setMsg({ "id": "000", "msg": response.data.msg });
-    setEstimateNo(response.data.estimateNo);
+    setEstimateNoValue(response.data.estimateNo);
+  };
+
+  // ダイアログオープン（明細登録）
+  const handleClickOpenDetail = (response) => {
+    setOpen(true);
+    setMsg({ "id": "000", "msg": response.data.msg });
   };
 
   // ダイアログクローズ
@@ -164,7 +170,7 @@ export default function Estimate() {
 
     // ヘッダフォーム
     const formData = new FormData(headerFormRef.current);
-    const values = Object.fromEntries(formData.entries());
+    const formDataValues = Object.fromEntries(formData.entries());
 
     axios.post('http://172.28.73.88:8080/api/estimate/detail', {
       rowNo: detailFormValues.rowNo, //行番号
@@ -179,10 +185,10 @@ export default function Estimate() {
       profit: convertToNullableNumber(detailFormValues.profit), // 粗利
       taxedUnit: convertToNullableNumber(detailFormValues.taxedUnit), // 課税区分
       apply: detailFormValues.apply, // 適用
-      customerName: values.customerName,  //見積番号とかにしたい
+      estimateNo: formDataValues.estimateNo,  //見積番号
     })
       .then((response) => {
-        handleClickOpen(response);
+        handleClickOpenDetail(response);
       })
       .catch((error) => {
         errorHandler(error)
@@ -210,7 +216,7 @@ export default function Estimate() {
           >
             <Box sx={{ display: "flex", justifyContent: "left", alignItems: "flex-start", height: 80, width: 1200, border: 0 }}>
               <Box sx={{ padding: 1, width: 200, border: 0 }} >
-                <TextField id="estimateNo" name="estimateNo" label="見積番号" value={estimateNo} disabled={true} inputProps={{ maxLength: 10, size: 20 }} InputLabelProps={{ shrink: true }} sx={{ backgroundColor: 'silver' }} />
+                <TextField id="estimateNoTxt" name="estimateNoTxt" label="見積番号" value={estimateNoValue} disabled={true} inputProps={{ maxLength: 10, size: 20 }} InputLabelProps={{ shrink: true }} sx={{ backgroundColor: 'silver' }} />
               </Box>
               <Box sx={{ padding: 1, width: 160, border: 0 }} >
                 <TextField id="estimateDate" name="estimateDate" label="見積日時" type="date" InputLabelProps={{ shrink: true, required: true }} defaultValue="2020-10-11" />
@@ -306,7 +312,10 @@ export default function Estimate() {
                 </FormControl>
               </Box>
               <Box sx={{ padding: 1, width: 550, border: 0 }} >
-                <TextField id="overview" name="overview" label="適用" inputProps={{ maxLength: 30, size: 60 }} InputLabelProps={{ shrink: true, required: true }} />
+                <TextField id="overview" name="overview" label="適用" inputProps={{ maxLength: 30, size: 60 }} InputLabelProps={{ shrink: true }} />
+              </Box>
+              <Box sx={{ padding: 1, width: 10, border: 0 }} >
+                <TextField type="hidden" id="estimateNo" name="estimateNo" value={estimateNoValue} style={{ display: 'none' }} />
               </Box>
             </Box>
             <Box sx={{ display: "flex", justifyContent: "left", alignItems: "flex-start", height: 80, width: 1200, border: 0 }}>
@@ -446,18 +455,18 @@ export default function Estimate() {
                       </FormControl>
                     </Box>
                     <Box sx={{ padding: 1, width: 100, border: 0 }} >
-                      <TextField id="costPrice" name="costPrice" label="販売原価" inputProps={{ maxLength: 5, size: 5 }} InputLabelProps={{ shrink: true, required: true }} />
+                      <TextField id="costPrice" name="costPrice" label="販売原価" inputProps={{ maxLength: 5, size: 5 }} InputLabelProps={{ shrink: true, }} />
                     </Box>
                     <Box sx={{ padding: 1, width: 200, border: 0 }} >
-                      <TextField id="costAmount" name="costAmount" label="原価金額" inputProps={{ maxLength: 20, size: 20 }} InputLabelProps={{ shrink: true, required: true }} />
+                      <TextField id="costAmount" name="costAmount" label="原価金額" inputProps={{ maxLength: 20, size: 20 }} InputLabelProps={{ shrink: true }} />
                     </Box>
                     <Box sx={{ padding: 1, width: 200, border: 0 }} >
-                      <TextField id="profit" name="profit" label="粗利" inputProps={{ maxLength: 20, size: 20 }} InputLabelProps={{ shrink: true, required: true }} />
+                      <TextField id="profit" name="profit" label="粗利" inputProps={{ maxLength: 20, size: 20 }} InputLabelProps={{ shrink: true }} />
                     </Box>
                   </Box>
                   <Box sx={{ display: "flex", justifyContent: "left", alignItems: "flex-start", height: 80, width: 1000, padding: 1, border: 0, borderColor: "blue" }}>
                     <Box sx={{ padding: 1, width: 800, border: 0 }} >
-                      <TextField id="apply" name="apply" label="適用" inputProps={{ maxLength: 40, size: 80 }} InputLabelProps={{ shrink: true, required: true }} />
+                      <TextField id="apply" name="apply" label="適用" inputProps={{ maxLength: 40, size: 80 }} InputLabelProps={{ shrink: true }} />
                     </Box>
                   </Box>
                 </TabPanel >

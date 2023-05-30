@@ -25,6 +25,6 @@ public record EstimateDetailForm(
         String taxedUnit,
         // 適用
         String apply,
-        // 顧客名
-        String customerName) {
+        // 見積番号
+        String estimateNo) {
 }

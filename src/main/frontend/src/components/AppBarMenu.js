@@ -39,18 +39,18 @@ export default function AppBarMenu() {
         );
       case '2':
         return Array.of(
-          { key: '1', name: '顧客マスタ', link: '/menu' },
-          { key: '2', name: 'hoge', link: '/' },
+          { key: '1', name: '売上登録', link: '/menu' },
+          { key: '2', name: '売上検索', link: '/' },
         );
       case '3':
         return Array.of(
-          { key: '1', name: '顧客マスタ', link: '/' },
-          { key: '2', name: 'hogeeee', link: '/' },
+          { key: '1', name: '発注登録', link: '/' },
+          { key: '2', name: '発注検索', link: '/' },
         );
       default:
         return Array.of(
-          { key: '1', name: '顧客マスタ', link: '/' },
-          { key: '2', name: 'hogeeee', link: '/' },
+          { key: '1', name: '商品マスタ', link: '/' },
+          { key: '2', name: '担当者マスタ', link: '/' },
         );
     }
   }

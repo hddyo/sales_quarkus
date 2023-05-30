@@ -1,6 +1,8 @@
 package info.sales.entity;
 
 import java.time.LocalDate;
+import java.util.Optional;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -56,6 +58,12 @@ public class Estimate extends PanacheEntityBase {
         this.responsiblePerson = responsiblePerson;
         this.paymentCriteria = paymentCriteria;
         this.overview = overview;
+    }
+
+    public static Optional<Estimate> findByEstimateNo(String estimateNo) {
+
+        return find("estimateNo", estimateNo).firstResultOptional();
+
     }
 
 }

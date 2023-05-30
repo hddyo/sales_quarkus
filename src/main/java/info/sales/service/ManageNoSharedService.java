@@ -36,14 +36,14 @@ public class ManageNoSharedService {
         if (estimateDate.equals(nowDate)) {
             dto2.setSerialNo(no + 1);
 
-            paddedNumber = String.format("%06d", no + 1);
+            paddedNumber = nowDate + String.format("%06d", no + 1);
             dto2.setCompositeNo(paddedNumber);
 
         } else {
             dto2.setSerialNo(1);
 
             // 日付
-            paddedNumber = String.format("%06d", 1);
+            paddedNumber = nowDate + String.format("%06d", 1);
             dto2.setCompositeNo(paddedNumber);
 
         }
