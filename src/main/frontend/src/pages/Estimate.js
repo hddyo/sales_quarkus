@@ -1,5 +1,5 @@
 //import * as React from 'react';
-import React, { useRef } from "react"
+import React, { useRef, useEffect } from "react"
 import Box from '@mui/material/Box';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -17,49 +17,105 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { TabContext, TabPanel } from '@mui/lab';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import AppBarMenu from '../components/AppBarMenu';
 import axios from 'axios';
+import AppBarMenu from '../components/AppBarMenu';
 import { convertToNullableNumber } from '../utils/utils.js';
-
 
 export default function Estimate() {
 
-  // ダイアログ
-  const [open, setOpen] = React.useState(false);
-  // メッセージ
-  const [msg, setMsg] = React.useState({ "id": "000", "msg": "初期メッセージ" });
-  // 見積番号
-  const [estimateNoValue, setEstimateNoValue] = React.useState("")
-  // 明細No
-  const [value, setValue] = React.useState("1")
-  // 単位（選択値）
-  const [salesUnitValue, setSalesUnitValue] = React.useState("0");
-  // 受渡期日（選択値）
-  const [deliveryDeadlineValue, setdeliveryDeadlineValue] = React.useState("0");
-  // 受渡場所（選択値）
-  const [deliveryLocationValue, setDeliveryLocationValue] = React.useState("0");
-  // 見積有効期限（選択値）
-  const [estimateExpirationDateValue, setEstimateExpirationDateValue] = React.useState("0");
-  // 支払条件（選択値）
-  const [paymentCriteriaValue, setPaymentCriteriaValue] = React.useState("0");
-  // 課税区分（選択値）
-  const [taxedUnitValue, setTaxedUnitValue] = React.useState("0");
-  // 仕入数量
-  const [salesQuantity2, setSalesQuantity2] = React.useState("");
+  const [open, setOpen] = React.useState(false);    // ダイアログ
+  const [msg, setMsg] = React.useState({ "id": "000", "msg": "初期メッセージ" });     // メッセージ
+  const [estimateNoValue, setEstimateNoValue] = React.useState("");                 // 見積番号
+  const [customerNameValue, setcustomerNameValue] = React.useState("");             // 顧客名
 
-  // ヘッダフォーム
-  const headerFormRef = useRef();
-  // 明細フォーム
-  const detailFormRef = useRef();
+  const [rowNo, setRowNo] = React.useState("1");                                    // 明細No
+  const [itemCodeValue, setItemCodeValue] = React.useState("");                     // 商品コード
+  const [itemNameValue, setItemNameValue] = React.useState("");                     // 商品名
+  const [salesQuantityValue, setSalesQuantityValue] = React.useState("");           // 売上数量
+  const [salesUnitValue, setSalesUnitValue] = React.useState("0");                  // 単位（選択値）
+  const [salesPriceValue, setSalesPriceValue] = React.useState("");                 // 販売単価
+  const [salesAmountValue, setSalesAmountValue] = React.useState("");               // 販売金額
+  const [taxedUnitValue, setTaxedUnitValue] = React.useState("0");                  // 課税区分（選択値）
+  const [salesQuantityValue2, setSalesQuantityValue2] = React.useState("");         // 仕入数量
+  const [costPriceValue, setCostPriceValue] = React.useState("");                   // 販売原価
+  const [costAmountValue, setCostAmountValue] = React.useState("");                 // 原価金額
+  const [profitValue, setProfitValue] = React.useState("");                         // 粗利
+  const [applyValue, setApplyValue] = React.useState("");                           // 適用
+  const [deliveryDeadlineValue, setdeliveryDeadlineValue] = React.useState("0");    // 受渡期日（選択値）
+  const [deliveryLocationValue, setDeliveryLocationValue] = React.useState("0");    // 受渡場所（選択値）
+  const [estimateExpirationDateValue, setEstimateExpirationDateValue] = React.useState("0");    // 見積有効期限（選択値）
+  const [paymentCriteriaValue, setPaymentCriteriaValue] = React.useState("0");    // 支払条件（選択値）
+  const headerFormRef = useRef();   // ヘッダフォーム
+  const detailFormRef = useRef();   // 明細フォーム
 
-  // ダイアログオープン
+  // 顧客名
+  const changeCustomerNameValue = (event) => { setcustomerNameValue(event.target.value) };
+
+  // 明細No設定
+  const handleChange = (event, newValue) => { setRowNo(newValue) };
+  // 商品コード　イベント
+  const changeItemCodeValue = (event) => { setItemCodeValue(event.target.value) };
+  // 商品名　イベント
+  const changeItemNameValue = (event) => { setItemNameValue(event.target.value) };
+  // 数量　イベント
+  const changeSalesQuantityValue = (event) => { setSalesQuantityValue(event.target.value) };
+  // 売上数量フォーカスアウト　イベント
+  const blurSalesQuantityValue = (event) => {
+    setSalesQuantityValue2(event.target.value);
+    setItemNameValue("aaaaa");  // test
+  };
+  // 単位（選択値）イベント
+  const changeSalesUnit = (event) => { setSalesUnitValue(event.target.value) };
+  // 販売単価　イベント
+  const changeSalesPriceValue = (event) => { setSalesPriceValue(event.target.value) };
+  // 販売金額　イベント
+  const changeSalesAmountValue = (event) => { setSalesAmountValue(event.target.value) };
+  // 課税区分（選択値）イベント
+  const changeTaxedUnitValue = (event) => { setTaxedUnitValue(event.target.value) };
+  // 販売原価イベント
+  const changeCostPriceValue = (event) => { setCostPriceValue(event.target.value) };
+  // 原価金額イベント
+  const changeCostAmountValue = (event) => { setCostAmountValue(event.target.value) };
+  // 粗利イベント
+  const changeProfitValue = (event) => { setProfitValue(event.target.value) };
+  // 適用イベント
+  const changeApplyValue = (event) => { setApplyValue(event.target.value) };
+  // 受渡期日（選択値）イベント
+  const changeDeliveryDeadlineValue = (event) => { setdeliveryDeadlineValue(event.target.value) };
+  // 受渡場所（選択値）イベント
+  const changeDeliveryLocationValue = (event) => { setDeliveryLocationValue(event.target.value) };
+  // 見積有効期限（選択値）イベント
+  const changeEstimateExpirationDateValue = (event) => { setEstimateExpirationDateValue(event.target.value) };
+  // 支払条件（選択値）イベント
+  const changePaymentCriteriaValue = (event) => { setPaymentCriteriaValue(event.target.value) };
+
+  // 明細No　変更時
+  useEffect(() => {
+    // 明細データ取得
+    axios.get('http://172.28.73.88:8080/api/estimate/detail', {
+      params: {
+        estimateNo: estimateNoValue, //見積番号
+        rowNo: rowNo,  //明細No
+      }
+    })
+      .then((response) => {
+        //データ設定
+        //handleClickOpen(response);
+      })
+      .catch((error) => {
+        errorHandler(error)
+      });
+
+  }, [rowNo]);
+
+  // ダイアログオープン（ヘッダ登録後）
   const handleClickOpen = (response) => {
     setOpen(true);
     setMsg({ "id": "000", "msg": response.data.msg });
     setEstimateNoValue(response.data.estimateNo);
   };
 
-  // ダイアログオープン（明細登録）
+  // ダイアログオープン（明細登録後）
   const handleClickOpenDetail = (response) => {
     setOpen(true);
     setMsg({ "id": "000", "msg": response.data.msg });
@@ -68,39 +124,6 @@ export default function Estimate() {
   // ダイアログクローズ
   const handleClose = () => {
     setOpen(false);
-  };
-
-  // 明細No設定
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-  // 単位（選択値）イベント
-  const changeSalesUnit = (event) => {
-    setSalesUnitValue(event.target.value);
-  };
-  // 受渡期日（選択値）イベント
-  const changeDeliveryDeadlineValue = (event) => {
-    setdeliveryDeadlineValue(event.target.value);
-  };
-  // 受渡場所（選択値）イベント
-  const changeDeliveryLocationValue = (event) => {
-    setDeliveryLocationValue(event.target.value);
-  };
-  // 見積有効期限（選択値）イベント
-  const changeEstimateExpirationDateValue = (event) => {
-    setEstimateExpirationDateValue(event.target.value);
-  };
-  // 支払条件（選択値）イベント
-  const changePaymentCriteriaValue = (event) => {
-    setPaymentCriteriaValue(event.target.value);
-  };
-  // 課税区分（選択値）イベント
-  const changeTaxedUnitValue = (event) => {
-    setTaxedUnitValue(event.target.value);
-  };
-  // 売上数量フォーカスアウト　イベント
-  const blurSalesQuantity = (event) => {
-    setSalesQuantity2(event.target.value)
   };
 
   // 明細数を元に配列を作成する関数を作成する
@@ -118,7 +141,7 @@ export default function Estimate() {
     { "value": "10", "label": "明細１０" },
   ];
 
-  // エラーハンドル
+  // エラーハンドラ
   const errorHandler = (error) => {
     if (error.response) {
       setMsg({ "id": "000", "msg": error.response.data.msg });
@@ -150,6 +173,7 @@ export default function Estimate() {
       responsiblePerson: values.responsiblePerson,  //担当者
       paymentCriteria: values.paymentCriteria,  //支払条件
       overview: values.overview,  //適用
+      estimateNo: estimateNoValue,   //見積番号
     })
       .then((response) => {
         handleClickOpen(response);
@@ -173,7 +197,7 @@ export default function Estimate() {
     const formDataValues = Object.fromEntries(formData.entries());
 
     axios.post('http://172.28.73.88:8080/api/estimate/detail', {
-      rowNo: detailFormValues.rowNo, //行番号
+      rowNo: rowNo, //行番号
       itemCode: detailFormValues.itemCode, //商品コード
       itemName: detailFormValues.itemName, //商品名
       salesQuantity: convertToNullableNumber(detailFormValues.salesQuantity), // 販売数量
@@ -222,7 +246,7 @@ export default function Estimate() {
                 <TextField id="estimateDate" name="estimateDate" label="見積日時" type="date" InputLabelProps={{ shrink: true, required: true }} defaultValue="2020-10-11" />
               </Box>
               <Box sx={{ padding: 1, width: 400, border: 0 }} >
-                <TextField id="customerName" name="customerName" label="顧客名" inputProps={{ maxLength: 20, size: 40 }} InputLabelProps={{ shrink: true, required: true }} />
+                <TextField id="customerName" name="customerName" label="顧客名" value={customerNameValue} inputProps={{ maxLength: 20, size: 40 }} InputLabelProps={{ shrink: true, required: true }} onChange={changeCustomerNameValue} />
               </Box>
             </Box>
             <Box sx={{ display: "flex", justifyContent: "left", alignItems: "flex-start", height: 80, width: 1200, border: 0 }}>
@@ -346,11 +370,11 @@ export default function Estimate() {
             ref={detailFormRef}
           >
             <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 550, border: 0 }} >
-              <TabContext value={value}>
+              <TabContext value={rowNo}>
                 <Tabs
                   orientation="vertical"
                   variant="scrollable"
-                  value={value}
+                  value={rowNo}
                   onChange={handleChange}
                   aria-label="Vertical tabs example"
                   sx={{ borderRight: 2, borderColor: 'divider' }}
@@ -359,18 +383,18 @@ export default function Estimate() {
                     <Tab key={index} label={tab.label} value={tab.value} />
                   ))}
                 </Tabs>
-                <TabPanel value={value}>
+                <TabPanel value={rowNo}>
                   <Box sx={{ display: "flex", justifyContent: "left", alignItems: "flex-start", height: 80, width: 1000, padding: 1, border: 0, borderColor: "blue" }}>
                     <Box sx={{ padding: 1, width: 120, border: 0 }} >
-                      <TextField id="itemCode" name="itemCode" label="商品コード" inputProps={{ maxLength: 5, size: 10, pattern: "^[0-9A-Za-z]+$", title: "半角英数字で入力して下さい。" }} InputLabelProps={{ shrink: true, required: true }} />
+                      <TextField id="itemCode" name="itemCode" label="商品コード" value={itemCodeValue} inputProps={{ maxLength: 5, size: 10, pattern: "^[0-9A-Za-z]+$", title: "半角英数字で入力して下さい。" }} InputLabelProps={{ shrink: true, required: true }} onChange={changeItemCodeValue} />
                     </Box>
                     <Box sx={{ padding: 1, width: 750, border: 0 }} >
-                      <TextField id="itemName" name="itemName" label="商品名" inputProps={{ maxLength: 30, size: 60 }} InputLabelProps={{ shrink: true }} />
+                      <TextField id="itemName" name="itemName" label="商品名" value={itemNameValue} inputProps={{ maxLength: 30, size: 60 }} InputLabelProps={{ shrink: true }} onChange={changeItemNameValue} />
                     </Box>
                   </Box>
                   <Box sx={{ display: "flex", justifyContent: "left", alignItems: "flex-start", height: 80, width: 1000, padding: 1, border: 0, borderColor: "blue" }}>
                     <Box sx={{ padding: 1, width: 100, border: 0 }} >
-                      <TextField id="salesQuantity" name="salesQuantity" label="数量" inputProps={{ maxLength: 3, size: 5 }} InputLabelProps={{ shrink: true }} onBlur={blurSalesQuantity} />
+                      <TextField id="salesQuantity" name="salesQuantity" label="数量" value={salesQuantityValue} inputProps={{ maxLength: 3, size: 5 }} InputLabelProps={{ shrink: true }} onChange={changeSalesQuantityValue} onBlur={blurSalesQuantityValue} />
                     </Box>
                     <Box sx={{ padding: 1, width: 150, border: 0 }} >
                       <FormControl fullWidth>
@@ -399,10 +423,10 @@ export default function Estimate() {
                       </FormControl>
                     </Box>
                     <Box sx={{ padding: 1, width: 100, border: 0 }} >
-                      <TextField id="salesPrice" name="salesPrice" label="販売単価" inputProps={{ maxLength: 5, size: 5 }} InputLabelProps={{ shrink: true }} />
+                      <TextField id="salesPrice" name="salesPrice" label="販売単価" value={salesPriceValue} inputProps={{ maxLength: 5, size: 5 }} InputLabelProps={{ shrink: true }} onChange={changeSalesPriceValue} />
                     </Box>
                     <Box sx={{ padding: 1, width: 200, border: 0 }} >
-                      <TextField id="salesAmount" name="salesAmount" label="販売金額" inputProps={{ maxLength: 20, size: 20 }} InputLabelProps={{ shrink: true }} />
+                      <TextField id="salesAmount" name="salesAmount" label="販売金額" value={salesAmountValue} inputProps={{ maxLength: 20, size: 20 }} InputLabelProps={{ shrink: true }} onChange={changeSalesAmountValue} />
                     </Box>
                     <Box sx={{ padding: 1, width: 150, border: 0 }} >
                       <FormControl fullWidth>
@@ -424,7 +448,7 @@ export default function Estimate() {
                   </Box>
                   <Box sx={{ display: "flex", justifyContent: "left", alignItems: "flex-start", height: 80, width: 1000, padding: 1, border: 0, borderColor: "blue" }}>
                     <Box sx={{ padding: 1, width: 100, border: 0 }} >
-                      <TextField id="salesQuantity2" name="salesQuantity2" label="数量" value={salesQuantity2} disabled={true} inputProps={{ maxLength: 5, size: 5 }} InputLabelProps={{ shrink: true }} sx={{ backgroundColor: 'silver' }} />
+                      <TextField id="salesQuantity2" name="salesQuantity2" label="数量" value={salesQuantityValue2} disabled={true} inputProps={{ maxLength: 5, size: 5 }} InputLabelProps={{ shrink: true }} sx={{ backgroundColor: 'silver' }} />
                     </Box>
                     <Box sx={{ padding: 1, width: 150, border: 0 }} >
                       <FormControl fullWidth>
@@ -455,18 +479,18 @@ export default function Estimate() {
                       </FormControl>
                     </Box>
                     <Box sx={{ padding: 1, width: 100, border: 0 }} >
-                      <TextField id="costPrice" name="costPrice" label="販売原価" inputProps={{ maxLength: 5, size: 5 }} InputLabelProps={{ shrink: true, }} />
+                      <TextField id="costPrice" name="costPrice" label="販売原価" value={costPriceValue} inputProps={{ maxLength: 5, size: 5 }} InputLabelProps={{ shrink: true, }} onChange={changeCostPriceValue} />
                     </Box>
                     <Box sx={{ padding: 1, width: 200, border: 0 }} >
-                      <TextField id="costAmount" name="costAmount" label="原価金額" inputProps={{ maxLength: 20, size: 20 }} InputLabelProps={{ shrink: true }} />
+                      <TextField id="costAmount" name="costAmount" label="原価金額" value={costAmountValue} inputProps={{ maxLength: 20, size: 20 }} InputLabelProps={{ shrink: true }} onChange={changeCostAmountValue} />
                     </Box>
                     <Box sx={{ padding: 1, width: 200, border: 0 }} >
-                      <TextField id="profit" name="profit" label="粗利" inputProps={{ maxLength: 20, size: 20 }} InputLabelProps={{ shrink: true }} />
+                      <TextField id="profit" name="profit" label="粗利" value={profitValue} inputProps={{ maxLength: 20, size: 20 }} InputLabelProps={{ shrink: true }} onChange={changeProfitValue} />
                     </Box>
                   </Box>
                   <Box sx={{ display: "flex", justifyContent: "left", alignItems: "flex-start", height: 80, width: 1000, padding: 1, border: 0, borderColor: "blue" }}>
                     <Box sx={{ padding: 1, width: 800, border: 0 }} >
-                      <TextField id="apply" name="apply" label="適用" inputProps={{ maxLength: 40, size: 80 }} InputLabelProps={{ shrink: true }} />
+                      <TextField id="apply" name="apply" label="適用" value={applyValue} inputProps={{ maxLength: 40, size: 80 }} InputLabelProps={{ shrink: true }} onChange={changeApplyValue} />
                     </Box>
                   </Box>
                 </TabPanel >
@@ -511,9 +535,6 @@ export default function Estimate() {
                 >
                   明細追加
                 </Button>
-              </Box>
-              <Box sx={{ padding: 1, width: 100, border: 0 }} >
-                <TextField type="hidden" id="rowNo" name="rowNo" value={value} style={{ display: 'none' }} />
               </Box>
             </Box>
           </Box>

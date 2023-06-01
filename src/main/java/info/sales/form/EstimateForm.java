@@ -23,5 +23,7 @@ public record EstimateForm(
         // 支払条件
         String paymentCriteria,
         // 適用
-        String overview) {
+        String overview,
+        // 見積番号
+        String estimateNo) {
 }

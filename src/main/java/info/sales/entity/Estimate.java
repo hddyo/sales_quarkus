@@ -60,6 +60,12 @@ public class Estimate extends PanacheEntityBase {
         this.overview = overview;
     }
 
+    /**
+     * 見積番号照会
+     * 
+     * @param estimateNo
+     * @return
+     */
     public static Optional<Estimate> findByEstimateNo(String estimateNo) {
 
         return find("estimateNo", estimateNo).firstResultOptional();

@@ -7,11 +7,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import org.hibernate.exception.DataException;
-
 import info.sales.form.EstimateDetailForm;
 import info.sales.form.EstimateForm;
 import info.sales.msg.AplicationMsg;
@@ -36,6 +35,17 @@ public class EstimateResource {
     }
 
     /**
+     * 明細データ取得
+     */
+    @GET
+    @Path("detail")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getDetailData(@QueryParam("estimateNo") String estimateNo, @QueryParam("rowNo") String rowNo) {
+
+        return "Hello Estimate";
+    }
+
+    /**
      * 見積ヘッダ登録
      * 
      * @param form 見積ヘッダフォーム
@@ -48,9 +58,21 @@ public class EstimateResource {
     public Response addHeader(EstimateForm form) {
 
         try {
-            String EstimanteNo = service.add(form);
 
-            EstimateMsg msg = new EstimateMsg("001", "登録完了しました。", EstimanteNo);
+            String option = "";
+            if (form.estimateNo() == null || form.estimateNo().isEmpty()) {
+                // 登録
+                String estimanteNo = service.add(form);
+                option = estimanteNo;
+
+            } else {
+                // 更新
+                service.update(form);
+                option = form.estimateNo();
+
+            }
+
+            EstimateMsg msg = new EstimateMsg("001", "登録完了しました。", option);
             return Response.ok(msg).build();
 
         } catch (DataException e) {
