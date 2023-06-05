@@ -9,8 +9,8 @@ public class LoginForm {
     }
 
     public LoginForm(String id, String password) {
-        this.id = id;
-        this.password = password;
+        this.id = id; // ID
+        this.password = password; // パスワード
     }
 
 }

@@ -1,6 +1,7 @@
 package info.sales.resource;
 
 import javax.inject.Inject;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -14,8 +15,10 @@ import org.hibernate.exception.DataException;
 import info.sales.form.EstimateDetailForm;
 import info.sales.form.EstimateForm;
 import info.sales.msg.AplicationMsg;
+import info.sales.msg.EstimateDetailDataMsg;
 import info.sales.msg.EstimateMsg;
 import info.sales.service.EstimateService;
+import info.sales.entity.EstimateDetail;
 
 @Path("/api/estimate")
 public class EstimateResource {
@@ -39,10 +42,45 @@ public class EstimateResource {
      */
     @GET
     @Path("detail")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String getDetailData(@QueryParam("estimateNo") String estimateNo, @QueryParam("rowNo") String rowNo) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getDetailData(@QueryParam("estimateNo") String estimateNo, @QueryParam("rowNo") String rowNo) {
 
-        return "Hello Estimate";
+        try {
+
+            EstimateDetail estimateDetail = service.getDetail(estimateNo, rowNo);
+
+            EstimateDetailDataMsg msg = new EstimateDetailDataMsg(
+                    estimateDetail.itemCode,
+                    estimateDetail.itemName,
+                    estimateDetail.salesQuantity,
+                    estimateDetail.salesUnit,
+                    estimateDetail.salesPrice,
+                    estimateDetail.salesAmount,
+                    estimateDetail.costPrice,
+                    estimateDetail.costAmount,
+                    estimateDetail.profit,
+                    estimateDetail.taxedUnit,
+                    estimateDetail.apply);
+            return Response.ok(msg).build();
+
+        } catch (EntityNotFoundException e) {
+
+            EstimateDetailDataMsg msg = new EstimateDetailDataMsg(
+                    "",
+                    "",
+                    null,
+                    "",
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    "",
+                    "");
+            return Response.ok(msg).build();
+
+        }
+
     }
 
     /**
@@ -59,20 +97,8 @@ public class EstimateResource {
 
         try {
 
-            String option = "";
-            if (form.estimateNo() == null || form.estimateNo().isEmpty()) {
-                // 登録
-                String estimanteNo = service.add(form);
-                option = estimanteNo;
-
-            } else {
-                // 更新
-                service.update(form);
-                option = form.estimateNo();
-
-            }
-
-            EstimateMsg msg = new EstimateMsg("001", "登録完了しました。", option);
+            String estimanteNo = service.add(form);
+            EstimateMsg msg = new EstimateMsg("001", "登録完了しました。", estimanteNo);
             return Response.ok(msg).build();
 
         } catch (DataException e) {
@@ -97,6 +123,16 @@ public class EstimateResource {
     public Response addDetail(EstimateDetailForm form) {
 
         try {
+
+            String estimateNo = form.estimateNo();
+            if (estimateNo == null || estimateNo.isEmpty()) {
+
+                AplicationMsg msg = new AplicationMsg("001", "見積ヘッダを登録して下さい");
+                // 422 Unprocessable Entity
+                return Response.status(422).entity(msg).build();
+
+            }
+
             service.addDetail(form);
 
             AplicationMsg msg = new AplicationMsg("001", "登録完了しました。");

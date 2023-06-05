@@ -1,4 +1,3 @@
-//import * as React from 'react';
 import React, { useRef, useEffect } from "react"
 import Box from '@mui/material/Box';
 import Accordion from '@mui/material/Accordion';
@@ -27,7 +26,6 @@ export default function Estimate() {
   const [msg, setMsg] = React.useState({ "id": "000", "msg": "初期メッセージ" });     // メッセージ
   const [estimateNoValue, setEstimateNoValue] = React.useState("");                 // 見積番号
   const [customerNameValue, setcustomerNameValue] = React.useState("");             // 顧客名
-
   const [rowNo, setRowNo] = React.useState("1");                                    // 明細No
   const [itemCodeValue, setItemCodeValue] = React.useState("");                     // 商品コード
   const [itemNameValue, setItemNameValue] = React.useState("");                     // 商品名
@@ -50,7 +48,6 @@ export default function Estimate() {
 
   // 顧客名
   const changeCustomerNameValue = (event) => { setcustomerNameValue(event.target.value) };
-
   // 明細No設定
   const handleChange = (event, newValue) => { setRowNo(newValue) };
   // 商品コード　イベント
@@ -60,10 +57,7 @@ export default function Estimate() {
   // 数量　イベント
   const changeSalesQuantityValue = (event) => { setSalesQuantityValue(event.target.value) };
   // 売上数量フォーカスアウト　イベント
-  const blurSalesQuantityValue = (event) => {
-    setSalesQuantityValue2(event.target.value);
-    setItemNameValue("aaaaa");  // test
-  };
+  const blurSalesQuantityValue = (event) => { setSalesQuantityValue2(event.target.value) };
   // 単位（選択値）イベント
   const changeSalesUnit = (event) => { setSalesUnitValue(event.target.value) };
   // 販売単価　イベント
@@ -100,13 +94,19 @@ export default function Estimate() {
     })
       .then((response) => {
         //データ設定
-        //handleClickOpen(response);
+        handleMeisai(response);
       })
       .catch((error) => {
-        errorHandler(error)
+        //errorHandler(error)
       });
 
   }, [rowNo]);
+
+  // 明細取得
+  const handleMeisai = (response) => {
+    setItemCodeValue(response.data.itemCode);
+    setItemNameValue(response.data.itemName);
+  };
 
   // ダイアログオープン（ヘッダ登録後）
   const handleClickOpen = (response) => {

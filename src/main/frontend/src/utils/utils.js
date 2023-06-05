@@ -6,3 +6,7 @@ export function convertToNullableNumber(value) {
     return isNaN(numberValue) ? null : numberValue;
   }
 }
+
+export function convertToEmptyString(value) {
+  return value === null ? '' : value.toString();
+}

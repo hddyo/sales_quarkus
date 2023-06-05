@@ -1,5 +1,7 @@
 package info.sales.entity;
 
+import java.util.Optional;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -65,6 +67,18 @@ public class EstimateDetail extends PanacheEntityBase {
         this.profit = profit;
         this.taxedUnit = taxedUnit;
         this.apply = apply;
+    }
+
+    /**
+     * 見積番号照会
+     * 
+     * @param estimateNo
+     * @return
+     */
+    public static Optional<EstimateDetail> findByEstimateIdAndRowNo(Long estimateId, String rowNo) {
+
+        return find("estimate_id=?1 and row_no=?2", estimateId, rowNo).firstResultOptional();
+
     }
 
 }
