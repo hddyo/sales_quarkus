@@ -9,10 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
-
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 @Entity
@@ -48,11 +46,24 @@ public class LoginUser extends PanacheEntityBase {
         this.createdAt = createdAt;
     }
 
+    /**
+     * ユーザ情報 名称検索
+     * 
+     * @param name 名前
+     * @return
+     */
     public static LoginUser findByName(String name) {
         return find("full_name", name).firstResult();
 
     }
 
+    /**
+     * ユーザ情報 ID/パスワード検索
+     * 
+     * @param loginCd ログインＩＤ
+     * @param pass    パスワード
+     * @return
+     */
     public static LoginUser findByloginCdAndPass(String loginCd, String pass) {
 
         return find("login_cd = ?1 and password =?2 ", loginCd, pass).firstResult();

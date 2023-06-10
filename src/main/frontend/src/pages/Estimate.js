@@ -18,7 +18,7 @@ import { TabContext, TabPanel } from '@mui/lab';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import axios from 'axios';
 import AppBarMenu from '../components/AppBarMenu';
-import { convertToNullableNumber } from '../utils/utils.js';
+import { convertToNullableNumber, convertToEmptyString } from '../utils/utils.js';
 
 export default function Estimate() {
 
@@ -45,11 +45,15 @@ export default function Estimate() {
   const [paymentCriteriaValue, setPaymentCriteriaValue] = React.useState("0");    // 支払条件（選択値）
   const headerFormRef = useRef();   // ヘッダフォーム
   const detailFormRef = useRef();   // 明細フォーム
+  const isFirstRender = useRef(true);
 
   // 顧客名
   const changeCustomerNameValue = (event) => { setcustomerNameValue(event.target.value) };
   // 明細No設定
-  const handleChange = (event, newValue) => { setRowNo(newValue) };
+  const handleChange = (event, newValue) => {
+    setRowNo(newValue);
+    isFirstRender.current = false;
+  };
   // 商品コード　イベント
   const changeItemCodeValue = (event) => { setItemCodeValue(event.target.value) };
   // 商品名　イベント
@@ -85,6 +89,11 @@ export default function Estimate() {
 
   // 明細No　変更時
   useEffect(() => {
+
+    if (isFirstRender.current) {
+      return;
+    }
+
     // 明細データ取得
     axios.get('http://172.28.73.88:8080/api/estimate/detail', {
       params: {
@@ -106,6 +115,16 @@ export default function Estimate() {
   const handleMeisai = (response) => {
     setItemCodeValue(response.data.itemCode);
     setItemNameValue(response.data.itemName);
+    setSalesQuantityValue(convertToEmptyString(response.data.salesQuantity));     // 売上数量
+    setSalesUnitValue(response.data.salesUnit);                                   // 単位（選択値）
+    setSalesPriceValue(convertToEmptyString(response.data.salesPrice));           // 販売単価
+    setSalesAmountValue(convertToEmptyString(response.data.salesAmount));         // 販売金額
+    setTaxedUnitValue(response.data.taxedUnit);                                   // 課税区分（選択値）
+    setSalesQuantityValue2(convertToEmptyString(response.data.salesQuantity));    // 仕入数量
+    setCostPriceValue(convertToEmptyString(response.data.costPrice));             // 販売原価
+    setCostAmountValue(convertToEmptyString(response.data.costAmount));           // 原価金額
+    setProfitValue(convertToEmptyString(response.data.profit));                   // 粗利
+    setApplyValue(response.data.apply);                                           // 適用
   };
 
   // ダイアログオープン（ヘッダ登録後）

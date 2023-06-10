@@ -2,9 +2,6 @@ package info.sales.form;
 
 import java.time.LocalDate;
 
-/**
- * 見積ヘッダー フォームクラス
- */
 public record EstimateForm(
         // 見積日時
         LocalDate estimateDate,
