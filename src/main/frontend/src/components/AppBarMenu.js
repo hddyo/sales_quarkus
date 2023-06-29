@@ -35,7 +35,7 @@ export default function AppBarMenu() {
       case '1':
         return Array.of(
           { key: '1', name: '見積登録', link: '/estimate' },
-          { key: '2', name: '見積検索', link: '/' },
+          { key: '2', name: '見積検索', link: '/estimate_search' },
         );
       case '2':
         return Array.of(

@@ -18,7 +18,7 @@ import { TabContext, TabPanel } from '@mui/lab';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import axios from 'axios';
 import AppBarMenu from '../components/AppBarMenu';
-import { convertToNullableNumber, convertToEmptyString } from '../utils/utils.js';
+import { convertToNullableNumber, convertToEmptyString, getTabsData } from '../utils/utils.js';
 
 export default function Estimate() {
 
@@ -43,9 +43,14 @@ export default function Estimate() {
   const [deliveryLocationValue, setDeliveryLocationValue] = React.useState("0");    // 受渡場所（選択値）
   const [estimateExpirationDateValue, setEstimateExpirationDateValue] = React.useState("0");    // 見積有効期限（選択値）
   const [paymentCriteriaValue, setPaymentCriteriaValue] = React.useState("0");    // 支払条件（選択値）
+  const [tabsCountValue, setTabsCountValue] = React.useState(5);                  // タブ数
+
+
   const headerFormRef = useRef();   // ヘッダフォーム
   const detailFormRef = useRef();   // 明細フォーム
   const isFirstRender = useRef(true);
+
+
 
   // 顧客名
   const changeCustomerNameValue = (event) => { setcustomerNameValue(event.target.value) };
@@ -145,21 +150,6 @@ export default function Estimate() {
     setOpen(false);
   };
 
-  // 明細数を元に配列を作成する関数を作成する
-  // それを呼び出して下記を取得する
-  const tabs = [
-    { "value": "1", "label": "明細１" },
-    { "value": "2", "label": "明細２" },
-    { "value": "3", "label": "明細３" },
-    { "value": "4", "label": "明細４" },
-    { "value": "5", "label": "明細５" },
-    { "value": "6", "label": "明細６" },
-    { "value": "7", "label": "明細７" },
-    { "value": "8", "label": "明細８" },
-    { "value": "9", "label": "明細９" },
-    { "value": "10", "label": "明細１０" },
-  ];
-
   // エラーハンドラ
   const errorHandler = (error) => {
     if (error.response) {
@@ -237,6 +227,14 @@ export default function Estimate() {
         errorHandler(error)
       });
   }
+
+  // 明細追加ボタン
+  const handleRowNoAdd = () => {
+    let tmp = tabsCountValue;
+    tmp = tmp + 1;
+    setTabsCountValue(tmp);
+  };
+
 
   return (
     <>
@@ -384,8 +382,8 @@ export default function Estimate() {
         <AccordionDetails>
           <Box
             component="form"
-            onSubmit={handleDetailSubmit}
             sx={{ border: 0 }}
+            onSubmit={handleDetailSubmit}
             ref={detailFormRef}
           >
             <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 550, border: 0 }} >
@@ -398,7 +396,7 @@ export default function Estimate() {
                   aria-label="Vertical tabs example"
                   sx={{ borderRight: 2, borderColor: 'divider' }}
                 >
-                  {tabs.map((tab, index) => (
+                  {getTabsData(tabsCountValue).map((tab, index) => (
                     <Tab key={index} label={tab.label} value={tab.value} />
                   ))}
                 </Tabs>
@@ -518,25 +516,6 @@ export default function Estimate() {
             <Box
               sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 80, width: 1000, border: 0 }}
             >
-              <Box sx={{ padding: 1, width: 100, border: 0 }} >
-                税抜合計
-              </Box>
-              <Box sx={{ padding: 1, width: 100, border: 0 }} >
-                消費税合計
-              </Box>
-              <Box sx={{ padding: 1, width: 100, border: 0 }} >
-                税込合計
-              </Box>
-              <Box sx={{ padding: 1, width: 100, border: 0 }} >
-                原価合計
-              </Box>
-              <Box sx={{ padding: 1, width: 100, border: 0 }} >
-                粗利額合計
-              </Box>
-            </Box>
-            <Box
-              sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 80, width: 1000, border: 0 }}
-            >
               <Box sx={{ padding: 1, width: 210, border: 0 }} >
                 <Button
                   type="submit"
@@ -548,7 +527,7 @@ export default function Estimate() {
               </Box>
               <Box sx={{ padding: 1, width: 210, border: 0 }} >
                 <Button
-                  type="submit"
+                  onClick={handleRowNoAdd}
                   variant="contained"
                   sx={{ mt: 3, mb: 2, width: "200px", height: "40px" }}
                 >
